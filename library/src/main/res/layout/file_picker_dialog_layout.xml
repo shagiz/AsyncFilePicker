@@ -19,7 +19,8 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/fpd_margin"
             android:scaleType="center"
-            app:srcCompat="@drawable/ic_camera"/>
+            app:srcCompat="@drawable/file_picker_ic_camera"
+            android:layout_marginRight="@dimen/fpd_margin"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -45,7 +46,8 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/fpd_margin"
             android:scaleType="center"
-            app:srcCompat="@drawable/ic_image"/>
+            app:srcCompat="@drawable/file_picker_ic_image"
+            android:layout_marginRight="@dimen/fpd_margin"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -71,7 +73,8 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/fpd_margin"
             android:scaleType="center"
-            app:srcCompat="@drawable/ic_file_upload"/>
+            app:srcCompat="@drawable/file_picker_ic_file_upload"
+            android:layout_marginRight="@dimen/fpd_margin"/>
 
         <TextView
             android:layout_width="match_parent"

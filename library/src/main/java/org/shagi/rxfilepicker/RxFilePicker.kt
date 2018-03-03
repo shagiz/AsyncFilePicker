@@ -1,4 +1,4 @@
-package org.shagi.filepicker.filepicker
+package org.shagi.rxfilepicker
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -12,29 +12,35 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.util.concurrent.TimeUnit
 
-class RxFilePicker : FilePickerDialog.OnFilePickedListener, Disposable {
+class RxFilePicker(var context: Context?, private val useCache: Boolean = false) : FilePickerDialog.OnFilePickedListener, Disposable {
 
     private lateinit var mDialog: FilePickerDialog
 
-    private lateinit var mCacheController: CacheController
+    private var mCacheController: CacheController? = null
 
     private val compositeDisposable = CompositeDisposable()
 
-    private var context: Context? = null
-
     private var loadingListener: OnLoadingListener? = null
 
-    private var width = 1024;
-    private var height = 1024;
+    private var width = 1024
+    private var height = 1024
 
-    fun from(_context: Context): RxFilePicker {
-        context = _context
-        mCacheController = CacheController(_context)
+    init {
+        context?.let {
+            if (useCache) {
+                mCacheController = CacheController(it)
+            }
+        }
+    }
+
+    fun setup(settings: FilePickerSettings): RxFilePicker {
+        width = settings.maxWidth
+        height = settings.maxHeight
+        mCacheController?.setup(settings.maxCacheSize, settings.maxFileSize)
         return this
     }
 
@@ -66,12 +72,6 @@ class RxFilePicker : FilePickerDialog.OnFilePickedListener, Disposable {
         detach()
         context = null
         compositeDisposable.dispose()
-        Timber.d("DebugTag, disposed $context")
-    }
-
-    fun attach(_loadingListener: OnLoadingListener): RxFilePicker {
-        loadingListener = _loadingListener
-        return this
     }
 
     override fun onFilePicked(uri: Uri, fileType: FileType, fromCamera: Boolean) {
@@ -82,23 +82,16 @@ class RxFilePicker : FilePickerDialog.OnFilePickedListener, Disposable {
         context?.let {
             compositeDisposable.add(Observable.fromCallable { saveToFile(it, uri, fileType, fromCamera) }
                     .subscribeOn(Schedulers.io())
-                    .delay(30, TimeUnit.SECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnDispose { Timber.d("DebugTag, rxDisposed $context") }
-                    .subscribe({
-                        Timber.d("DebugTag, rxSucces $this - $context - $loadingListener")
-                        loadingListener?.onLoadingSuccess(key, it)
-                    }, {
-                        Timber.d("DebugTag, rxFail $context")
-                        loadingListener?.onLoadingFailure(key)
-                    }, {
-                        Timber.d("DebugTag, onComplete $context")
-                    }))
+                    .subscribe(
+                            { loadingListener?.onLoadingSuccess(key, it) },
+                            { loadingListener?.onLoadingFailure(key) }
+                    )
+            )
         }
     }
 
     override fun onFilePickFailed() {
-        Timber.d("DebugTag, onFilePickFailed $context")
         loadingListener?.onLoadingFailure(FILE_NOT_UPLOADED)
     }
 
@@ -106,14 +99,18 @@ class RxFilePicker : FilePickerDialog.OnFilePickedListener, Disposable {
 
     private fun saveToFile(context: Context, uri: Uri, fileType: FileType, isFromCamera: Boolean): File {
         return if (fileType == FileType.FILE) {
-            saveFile(uri)
+            saveFile(context, uri)
         } else {
             savePhoto(context, uri, isFromCamera)
         }
     }
 
-    private fun saveFile(uri: Uri): File {
-        return mCacheController.saveFile(uri)
+    private fun saveFile(context: Context, uri: Uri): File {
+        mCacheController?.let {
+            return it.saveFile(uri)
+        }
+
+        return saveTempFileUri(context, uri)
     }
 
     private fun savePhoto(context: Context, uri: Uri, isFromCamera: Boolean): File {
@@ -123,7 +120,11 @@ class RxFilePicker : FilePickerDialog.OnFilePickedListener, Disposable {
             resize(context, uri)
         }
 
-        return mCacheController.saveBitmap(rotateIfNeeded(context, bitmap, uri, isFromCamera))
+        mCacheController?.let {
+            return it.saveBitmap(rotateIfNeeded(context, bitmap, uri, isFromCamera))
+        }
+
+        return saveTempBitmap(context, rotateIfNeeded(context, bitmap, uri, isFromCamera))
     }
 
 
@@ -134,7 +135,6 @@ class RxFilePicker : FilePickerDialog.OnFilePickedListener, Disposable {
         } else {
             getPath(context, uri)
         }
-        Timber.d("AA $uri path: $path")
 
         val exif = if (path != null) {
             ExifInterface(path)
@@ -151,7 +151,6 @@ class RxFilePicker : FilePickerDialog.OnFilePickedListener, Disposable {
             else -> 0
         }
 
-        Timber.d("rotate $rotate")
         return rotate(bitmap, rotate)
     }
 

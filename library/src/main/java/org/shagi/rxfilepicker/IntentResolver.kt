@@ -1,4 +1,4 @@
-package org.shagi.filepicker.filepicker
+package org.shagi.rxfilepicker
 
 import android.Manifest
 import android.app.Activity
@@ -10,7 +10,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
 import java.io.File
-import java.util.ArrayList
+import java.util.*
 
 class IntentResolver(private val activity: Activity) {
 
@@ -90,7 +90,6 @@ class IntentResolver(private val activity: Activity) {
         return galleryIntent ?: throw IllegalStateException("intent must be created")
     }
 
-
     fun launchCamera(listener: Fragment) {
         if (requestPermissions(listener, getCameraPermissions()) && getCameraIntent().resolveActivity(activity.packageManager) != null) {
             listener.startActivityForResult(loadSystemPackages(getCameraIntent()), REQUESTER)
@@ -124,7 +123,6 @@ class IntentResolver(private val activity: Activity) {
         listener.requestPermissions(list.toTypedArray(), REQUESTER)
         return false
     }
-
 
     fun fromCamera(data: Intent?): Boolean {
         return data == null || data.data == null || data.data.toString().contains(cameraFile().toString())

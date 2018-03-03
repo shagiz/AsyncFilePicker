@@ -16,8 +16,8 @@
         android:layout_width="24dp"
         android:layout_height="match_parent"
         android:layout_marginEnd="@dimen/fpd_margin"
+        android:layout_marginRight="@dimen/fpd_margin"
         android:scaleType="center"
-        app:srcCompat="@drawable/ic_folder"
         tools:ignore="ContentDescription"/>
 
     <TextView
@@ -27,6 +27,5 @@
         android:gravity="center_vertical"
         android:paddingEnd="@dimen/fpd_margin"
         android:paddingStart="@dimen/fpd_margin"
-        android:text="@string/fpd_load_from_medical_note_documents"
         android:textSize="@dimen/fpd_text_size"/>
 </LinearLayout>

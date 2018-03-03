@@ -1,4 +1,4 @@
-package org.shagi.filepicker.filepicker
+package org.shagi.rxfilepicker
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -13,12 +13,24 @@ private const val MAX_FILE_SIZE = 10_485_760L //10MB
 
 class CacheController constructor(val context: Context) {
 
+    var maxCacheSize = MAX_CACHE_SIZE
+    var maxFileSize = MAX_FILE_SIZE
+
     private val cacheDir = File(context.cacheDir, "files_cache")
 
     init {
         if (!cacheDir.exists()) {
             cacheDir.mkdirs()
         }
+    }
+
+    fun setup(maxCacheSize: Long, maxFileSize: Long) {
+        if (maxFileSize > maxCacheSize) {
+            throw IllegalStateException("max file size couldn't be greater then max cache size")
+        }
+
+        this.maxCacheSize = maxCacheSize
+        this.maxFileSize = maxFileSize
     }
 
     @Throws(MaxCacheFileSizeException::class)
@@ -34,12 +46,12 @@ class CacheController constructor(val context: Context) {
 
             val size = it.size()
 
-            if (size > MAX_FILE_SIZE) {
+            if (size > maxFileSize) {
                 throw MaxCacheFileSizeException()
             }
 
-            if (currentSize + size > MAX_CACHE_SIZE) {
-                cleanSpace(cacheDir, (currentSize + size) - MAX_CACHE_SIZE)
+            if (currentSize + size > maxCacheSize) {
+                cleanSpace(cacheDir, (currentSize + size) - maxCacheSize)
             }
 
             FileOutputStream(imageFile).use {
@@ -60,21 +72,21 @@ class CacheController constructor(val context: Context) {
 
         val size = cursor?.getLong(cursor.getColumnIndex(OpenableColumns.SIZE))
 
-        if (size != null && size > MAX_FILE_SIZE) {
+        if (size != null && size > maxFileSize) {
             throw MaxCacheFileSizeException()
         }
 
         val inputStream = context.contentResolver.openInputStream(uri)
 
-        if (size == null && inputStream.available() > MAX_FILE_SIZE) {
+        if (size == null && inputStream.available() > maxFileSize) {
             throw MaxCacheFileSizeException()
         }
 
         val currentSize = getDirSize(cacheDir)
         val newSize = currentSize + inputStream.available()
 
-        if (newSize > MAX_CACHE_SIZE) {
-            cleanSpace(cacheDir, newSize - MAX_CACHE_SIZE)
+        if (newSize > maxCacheSize) {
+            cleanSpace(cacheDir, newSize - maxCacheSize)
         }
 
         val file = File(cacheDir, name)
@@ -111,5 +123,5 @@ class CacheController constructor(val context: Context) {
         return size
     }
 
-    class MaxCacheFileSizeException : IllegalArgumentException("Max file size is 10MB")
+    class MaxCacheFileSizeException : IllegalArgumentException("File size limit exceeded")
 }

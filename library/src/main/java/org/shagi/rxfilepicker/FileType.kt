@@ -1,4 +1,4 @@
-package org.shagi.filepicker.filepicker
+package org.shagi.rxfilepicker
 
 enum class FileType() {
     FILE,

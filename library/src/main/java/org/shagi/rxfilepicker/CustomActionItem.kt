@@ -1,4 +1,4 @@
-package org.shagi.filepicker.filepicker
+package org.shagi.rxfilepicker
 
 import android.content.Context
 import android.support.annotation.DrawableRes
@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.file_picker_action_layout.view.*
-import org.shagi.filepicker.R
 
 class CustomActionItem(@DrawableRes private val icon: Int,
                        @StringRes private val title: Int,

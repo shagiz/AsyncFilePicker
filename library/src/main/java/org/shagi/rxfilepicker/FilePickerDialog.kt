@@ -1,4 +1,4 @@
-package org.shagi.filepicker.filepicker
+package org.shagi.rxfilepicker
 
 import android.app.Activity
 import android.content.Intent
@@ -10,12 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import kotlinx.android.synthetic.main.layout_file_picker.*
-import org.shagi.filepicker.R
-import timber.log.Timber
+import kotlinx.android.synthetic.main.file_picker_dialog_layout.*
 
-
-class FilePickerDialog : BottomSheetDialogFragment() {
+open class FilePickerDialog : BottomSheetDialogFragment() {
 
     private lateinit var resolver: IntentResolver
 
@@ -23,28 +20,49 @@ class FilePickerDialog : BottomSheetDialogFragment() {
     private var isCameraStarting = false
     private val customActions = ArrayList<CustomActionItem>()
 
+    var showCamera = true
+    var showGallery = true
+    var showFileSystem = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        Timber.d("TEST onCreate $this  - $context")
         resolver = IntentResolver(activity)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
-            inflater.inflate(R.layout.layout_file_picker, container, false)
+            inflater.inflate(R.layout.file_picker_dialog_layout, container, false)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Timber.d("File picker dialog $context")
+    final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        file_picker_camera.setOnClickListener {
-            isCameraStarting = true
-            resolver.launchCamera(this)
+        if (!showCamera && !showGallery && !showFileSystem && customActions.isEmpty()) {
+            dismissAllowingStateLoss()
         }
-        file_picker_gallery.setOnClickListener {
-            isCameraStarting = false
-            resolver.launchGallery(this)
+
+        if (showCamera) {
+            file_picker_camera.setOnClickListener {
+                isCameraStarting = true
+                resolver.launchCamera(this)
+            }
+        } else {
+            file_picker_camera.visibility = View.GONE
         }
-        file_picker_files.setOnClickListener { onFilesOpenClick() }
+
+        if (showGallery) {
+            file_picker_gallery.setOnClickListener {
+                isCameraStarting = false
+                resolver.launchGallery(this)
+            }
+        } else {
+            file_picker_gallery.visibility = View.GONE
+        }
+
+        if (showFileSystem) {
+
+            file_picker_files.setOnClickListener { onFilesOpenClick() }
+        } else {
+            file_picker_files.visibility = View.GONE
+        }
 
         customActions.forEach {
             (view as LinearLayout).addView(it.generateView(context, view))
@@ -69,9 +87,8 @@ class FilePickerDialog : BottomSheetDialogFragment() {
         super.onDestroyView()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    final override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Timber.d("TEST onActivityResult $this  - $context - $filePickedListener - $customActions")
         if (requestCode == IntentResolver.REQUESTER && resultCode == Activity.RESULT_OK) {
             val isFromCamera = resolver.fromCamera(data)
             val fileType = getFileType(data)
@@ -85,8 +102,7 @@ class FilePickerDialog : BottomSheetDialogFragment() {
         dismissAllowingStateLoss()
     }
 
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    final override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == IntentResolver.REQUESTER) {
             var granted = true

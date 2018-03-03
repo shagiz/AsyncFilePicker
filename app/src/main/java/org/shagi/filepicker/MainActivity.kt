@@ -7,18 +7,17 @@ import android.widget.ImageView
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
-import org.shagi.filepicker.filepicker.CustomActionItem
-import org.shagi.filepicker.filepicker.FilePickerDialog
-import org.shagi.filepicker.filepicker.FilePickerFragment
-import org.shagi.filepicker.filepicker.RxFilePicker
+import org.shagi.filepicker.filepicker.MyFilePicker
+import org.shagi.rxfilepicker.CustomActionItem
+import org.shagi.rxfilepicker.FilePickerDialog
+import org.shagi.rxfilepicker.FilePickerFragment
+import org.shagi.rxfilepicker.RxFilePicker
 import timber.log.Timber
 import java.io.File
 
 class MainActivity : AppCompatActivity(), RxFilePicker.OnLoadingListener {
 
     private var keys: MutableList<Long> = ArrayList<Long>()
-
-    private var lastMillis = System.currentTimeMillis()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,14 +29,14 @@ class MainActivity : AppCompatActivity(), RxFilePicker.OnLoadingListener {
         if (savedInstanceState == null) {
             val filePickerDialog = FilePickerDialog.newInstance().apply {
                 addCustomAction(
-                        CustomActionItem(R.drawable.ic_folder,
+                        CustomActionItem(R.drawable.file_picker_ic_folder,
                                 R.string.fpd_load_from_medical_note_documents,
                                 View.OnClickListener {
                                     Toast.makeText(context, "1 $context", Toast.LENGTH_SHORT).show()
                                 })
                 )
                 addCustomAction(
-                        CustomActionItem(R.drawable.ic_folder,
+                        CustomActionItem(R.drawable.file_picker_ic_folder,
                                 R.string.fpd_load_from_medical_note_documents,
                                 View.OnClickListener {
                                     Toast.makeText(context, "2  $context", Toast.LENGTH_SHORT).show()
@@ -45,16 +44,15 @@ class MainActivity : AppCompatActivity(), RxFilePicker.OnLoadingListener {
                 )
             }
             listener = View.OnClickListener {
-                val pickerFragment = FilePickerFragment.getFragment(supportFragmentManager)
+                FilePickerFragment.getFragment(supportFragmentManager).apply {
+                    setOnLoadingListener(this@MainActivity)
+                    use(filePickerDialog)
+                }.show()
 
-                pickerFragment.setOnLoadingListener(this)
-                pickerFragment.use(filePickerDialog)
-                pickerFragment.show()
             }
         } else {
             keys = savedInstanceState.getLongArray(ARG_KEYS).toMutableList()
-            val fragment = FilePickerFragment.getFragment(supportFragmentManager)
-            fragment.setOnLoadingListener(this)
+            val fragment = FilePickerFragment.getFragment(supportFragmentManager).apply { setOnLoadingListener(this@MainActivity) }
             listener = View.OnClickListener { fragment.show() }
         }
 
@@ -64,6 +62,11 @@ class MainActivity : AppCompatActivity(), RxFilePicker.OnLoadingListener {
         image_4.setOnClickListener(listener)
 
         Timber.d("listener ${image_1.hasOnClickListeners()}")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putLongArray(ARG_KEYS, keys.toLongArray())
     }
 
     override fun onLoadingStart(key: Long) {
@@ -89,11 +92,6 @@ class MainActivity : AppCompatActivity(), RxFilePicker.OnLoadingListener {
                 .into(imageView)
 
         Timber.d("DebugTag, main onLoadingSuccess $this with key $key")
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putLongArray(ARG_KEYS, keys.toLongArray())
     }
 
     override fun onLoadingFailure(key: Long) {

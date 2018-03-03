@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">RxFilePicker</string>
+    <string name="fpd_take_photo">Take photo</string>
+    <string name="fpd_choose_gallery">Choose from gallery</string>
+    <string name="fpd_attach_file">Attach file</string>
 </resources>
