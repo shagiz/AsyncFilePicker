@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/file_picker_custom_action"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:background="?selectableItemBackground"
+    android:gravity="center_vertical"
+    android:paddingEnd="@dimen/fpd_margin"
+    android:paddingStart="@dimen/fpd_margin">
+
+    <ImageView
+        android:id="@+id/file_picker_custom_action_icon"
+        android:layout_width="24dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/fpd_margin"
+        android:scaleType="center"
+        app:srcCompat="@drawable/ic_folder"
+        tools:ignore="ContentDescription"/>
+
+    <TextView
+        android:id="@+id/file_picker_custom_action_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:paddingEnd="@dimen/fpd_margin"
+        android:paddingStart="@dimen/fpd_margin"
+        android:text="@string/fpd_load_from_medical_note_documents"
+        android:textSize="@dimen/fpd_text_size"/>
+</LinearLayout>

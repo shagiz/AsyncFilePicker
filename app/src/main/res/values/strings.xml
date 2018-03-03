@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">FilePicker</string>
+
+    <string name="fpd_take_photo">Take photo</string>
+    <string name="fpd_choose_gallery">Choose from gallery</string>
+    <string name="fpd_attach_file">Attach file</string>
+    <string name="fpd_load_from_medical_note_documents">Medical Note documents</string>
+</resources>

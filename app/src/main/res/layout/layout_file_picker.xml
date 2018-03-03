@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/file_picker_camera"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="?selectableItemBackground"
+        android:gravity="center_vertical"
+        android:paddingEnd="@dimen/fpd_margin"
+        android:paddingStart="@dimen/fpd_margin">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/fpd_margin"
+            android:scaleType="center"
+            app:srcCompat="@drawable/ic_camera"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/fpd_margin"
+            android:paddingStart="@dimen/fpd_margin"
+            android:text="@string/fpd_take_photo"
+            android:textSize="@dimen/fpd_text_size"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/file_picker_gallery"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="?selectableItemBackground"
+        android:gravity="center_vertical"
+        android:paddingEnd="@dimen/fpd_margin"
+        android:paddingStart="@dimen/fpd_margin">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/fpd_margin"
+            android:scaleType="center"
+            app:srcCompat="@drawable/ic_image"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/fpd_margin"
+            android:paddingStart="@dimen/fpd_margin"
+            android:text="@string/fpd_choose_gallery"
+            android:textSize="@dimen/fpd_text_size"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/file_picker_files"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="?selectableItemBackground"
+        android:gravity="center_vertical"
+        android:paddingEnd="@dimen/fpd_margin"
+        android:paddingStart="@dimen/fpd_margin">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/fpd_margin"
+            android:scaleType="center"
+            app:srcCompat="@drawable/ic_file_upload"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/fpd_margin"
+            android:paddingStart="@dimen/fpd_margin"
+            android:text="@string/fpd_attach_file"
+            android:textSize="@dimen/fpd_text_size"/>
+    </LinearLayout>
+
+</LinearLayout>
