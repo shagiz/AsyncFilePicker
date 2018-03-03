@@ -14,7 +14,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.FileNotFoundException
-import java.util.concurrent.TimeUnit
 
 class RxFilePicker(var context: Context?, private val useCache: Boolean = false) : FilePickerDialog.OnFilePickedListener, Disposable {
 
@@ -85,14 +84,14 @@ class RxFilePicker(var context: Context?, private val useCache: Boolean = false)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             { loadingListener?.onLoadingSuccess(key, it) },
-                            { loadingListener?.onLoadingFailure(key) }
+                            { loadingListener?.onLoadingFailure(key, it) }
                     )
             )
         }
     }
 
     override fun onFilePickFailed() {
-        loadingListener?.onLoadingFailure(FILE_NOT_UPLOADED)
+        loadingListener?.onLoadingFailure(FILE_NOT_UPLOADED, IllegalStateException("File not uploaded"))
     }
 
     //---------------------------------------------------------------------------------------------
@@ -203,7 +202,7 @@ class RxFilePicker(var context: Context?, private val useCache: Boolean = false)
     interface OnLoadingListener {
         fun onLoadingStart(key: Long)
         fun onLoadingSuccess(key: Long, file: File)
-        fun onLoadingFailure(key: Long)
+        fun onLoadingFailure(key: Long, throwable: Throwable)
     }
 
     companion object {

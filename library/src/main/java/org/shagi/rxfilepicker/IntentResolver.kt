@@ -97,7 +97,7 @@ class IntentResolver(private val activity: Activity) {
     }
 
     fun launchGallery(listener: Fragment) {
-        if (requestPermissions(listener, getGalleryCameraPermissions())) {
+        if (requestPermissions(listener, getGalleryPermissions())) {
             listener.startActivityForResult(loadSystemPackages(getGalleryIntent()), REQUESTER)
         }
     }
@@ -106,7 +106,7 @@ class IntentResolver(private val activity: Activity) {
         return arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
     }
 
-    private fun getGalleryCameraPermissions(): Array<String> {
+    private fun getGalleryPermissions(): Array<String> {
         return arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     }
 
