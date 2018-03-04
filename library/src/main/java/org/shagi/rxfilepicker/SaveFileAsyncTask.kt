@@ -5,93 +5,70 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.os.AsyncTask
 import android.support.media.ExifInterface
-import android.support.v4.app.FragmentManager
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import android.util.Log
+
 import java.io.File
 import java.io.FileNotFoundException
+import java.lang.ref.WeakReference
 
-class RxFilePicker(var context: Context?, private val useCache: Boolean = false) : FilePickerDialog.OnFilePickedListener, Disposable {
+class SaveFileAsyncTask internal constructor(context: Context,
+                                             cacheController: CacheController?,
+                                             private val fileType: FileType,
+                                             private val isFromCamera: Boolean) : AsyncTask<Uri, Void, File>() {
 
-    private lateinit var mDialog: FilePickerDialog
+    private var key: Long = 0
+    private var throwable: Throwable? = null
 
-    private var mCacheController: CacheController? = null
-
-    private val compositeDisposable = CompositeDisposable()
-
-    private var loadingListener: OnLoadingListener? = null
+    private val weakContext = WeakReference(context)
+    private var weakListener: WeakReference<FilePicker.OnLoadingListener>? = null
+    private var weakCacheController: WeakReference<CacheController>? = null
 
     private var width = 1024
     private var height = 1024
 
     init {
-        context?.let {
-            if (useCache) {
-                mCacheController = CacheController(it)
+        cacheController?.let { weakCacheController = WeakReference(cacheController) }
+    }
+
+    internal fun setLoadingListener(loadingListener: FilePicker.OnLoadingListener?) {
+        weakListener = WeakReference<FilePicker.OnLoadingListener>(loadingListener)
+    }
+
+    override fun onPreExecute() {
+        key = System.currentTimeMillis()
+        val loadingListener = weakListener?.get()
+        loadingListener?.onLoadingStart(key) ?: cancel(false)
+        Log.d("DEBUG", "onPreExecute $key, $loadingListener")
+    }
+
+    override fun doInBackground(vararg uris: Uri): File? {
+        if (isCancelled) return null
+        Log.d("DEBUG", "doInBackground $key, $uris, ${uris.size} , ${uris[0]}")
+
+        weakContext.get()?.let {
+             var r = saveToFile(it, uris[0], fileType, isFromCamera)
+            Thread.sleep(200000)
+            return r
+        }
+
+        return null;
+    }
+
+    override fun onPostExecute(file: File?) {
+        val loadingListener = weakListener?.get()
+
+        loadingListener?.let {
+            throwable?.let {
+                loadingListener.onLoadingFailure(key, it)
+                return
+            }
+            if (file != null) {
+                Log.d("DEBUG", "onPostExecute $key, $file, $loadingListener, ${weakContext.get()}")
+                loadingListener.onLoadingSuccess(key, file)
             }
         }
-    }
-
-    fun setup(settings: FilePickerSettings): RxFilePicker {
-        width = settings.maxWidth
-        height = settings.maxHeight
-        mCacheController?.setup(settings.maxCacheSize, settings.maxFileSize)
-        return this
-    }
-
-    fun with(filePickerDialog: FilePickerDialog): RxFilePicker {
-        mDialog = filePickerDialog
-        return this
-    }
-
-    fun subscribe(supportFragmentManager: FragmentManager): Disposable {
-        mDialog.filePickedListener = this
-        mDialog.show(supportFragmentManager, FilePickerDialog.TAG)
-        return this
-    }
-
-    override fun isDisposed(): Boolean {
-        return compositeDisposable.isDisposed
-    }
-
-    fun detach() {
-        loadingListener = null
-    }
-
-    fun setLoadingListener(_loadingListener: OnLoadingListener): RxFilePicker {
-        loadingListener = _loadingListener
-        return this
-    }
-
-    override fun dispose() {
-        detach()
-        context = null
-        compositeDisposable.dispose()
-    }
-
-    override fun onFilePicked(uri: Uri, fileType: FileType, fromCamera: Boolean) {
-        val key = System.currentTimeMillis()
-
-        loadingListener?.onLoadingStart(key)
-
-        context?.let {
-            compositeDisposable.add(Observable.fromCallable { saveToFile(it, uri, fileType, fromCamera) }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            { loadingListener?.onLoadingSuccess(key, it) },
-                            { loadingListener?.onLoadingFailure(key, it) }
-                    )
-            )
-        }
-    }
-
-    override fun onFilePickFailed() {
-        loadingListener?.onLoadingFailure(FILE_NOT_UPLOADED, IllegalStateException("File not uploaded"))
     }
 
     //---------------------------------------------------------------------------------------------
@@ -105,7 +82,7 @@ class RxFilePicker(var context: Context?, private val useCache: Boolean = false)
     }
 
     private fun saveFile(context: Context, uri: Uri): File {
-        mCacheController?.let {
+        weakCacheController?.get()?.let {
             return it.saveFile(uri)
         }
 
@@ -119,7 +96,7 @@ class RxFilePicker(var context: Context?, private val useCache: Boolean = false)
             resize(context, uri)
         }
 
-        mCacheController?.let {
+        weakCacheController?.get()?.let {
             return it.saveBitmap(rotateIfNeeded(context, bitmap, uri, isFromCamera))
         }
 
@@ -199,13 +176,4 @@ class RxFilePicker(var context: Context?, private val useCache: Boolean = false)
 
     //----------------------------------------------------------------------------------------------
 
-    interface OnLoadingListener {
-        fun onLoadingStart(key: Long)
-        fun onLoadingSuccess(key: Long, file: File)
-        fun onLoadingFailure(key: Long, throwable: Throwable)
-    }
-
-    companion object {
-        const val FILE_NOT_UPLOADED = -1L
-    }
 }
