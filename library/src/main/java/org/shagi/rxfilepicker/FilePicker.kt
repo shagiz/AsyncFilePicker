@@ -17,7 +17,7 @@ class FilePicker(var context: Context?, private val useCache: Boolean = false) :
     private var width = 1024
     private var height = 1024
 
-    private var task: SaveFileAsyncTask? = null
+    private var tasks = ArrayList<SaveFileAsyncTask>()
 
     init {
         context?.let {
@@ -44,28 +44,28 @@ class FilePicker(var context: Context?, private val useCache: Boolean = false) :
 
     fun detach() {
         loadingListener = null
-        task?.setLoadingListener(null)
-        Log.d("DEBUG", "detach $loadingListener, $context")
+        tasks.forEach { it.setLoadingListener(null) }
     }
 
     fun setLoadingListener(_loadingListener: OnLoadingListener) {
         loadingListener = _loadingListener
-        task?.setLoadingListener(_loadingListener)
+        tasks.forEach { it.setLoadingListener(_loadingListener) }
     }
 
     fun dispose() {
         detach()
+        tasks.clear()
         context = null
     }
 
     override fun onFilePicked(uri: Uri, fileType: FileType, fromCamera: Boolean) {
         context?.let {
-            task = SaveFileAsyncTask(it, mCacheController, fileType, fromCamera).apply {
+            tasks.add(SaveFileAsyncTask(it, mCacheController, fileType, fromCamera).apply {
                 loadingListener?.let {
                     setLoadingListener(it)
                     executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, uri)
                 }
-            }
+            })
         }
     }
 

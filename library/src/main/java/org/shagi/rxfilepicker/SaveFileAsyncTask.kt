@@ -48,7 +48,7 @@ class SaveFileAsyncTask internal constructor(context: Context,
         Log.d("DEBUG", "doInBackground $key, $uris, ${uris.size} , ${uris[0]}")
 
         weakContext.get()?.let {
-             var r = saveToFile(it, uris[0], fileType, isFromCamera)
+            var r = saveToFile(it, uris[0], fileType, isFromCamera)
             Thread.sleep(200000)
             return r
         }
