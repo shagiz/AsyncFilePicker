@@ -1,13 +1,12 @@
 package org.shagi.filepicker
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
-import org.shagi.filepicker.filepicker.MyFilePicker
 import org.shagi.rxfilepicker.CustomActionItem
 import org.shagi.rxfilepicker.FilePickerDialog
 import org.shagi.rxfilepicker.FilePickerFragment
@@ -94,9 +93,10 @@ class MainActivity : AppCompatActivity(), RxFilePicker.OnLoadingListener {
         Timber.d("DebugTag, main onLoadingSuccess $this with key $key")
     }
 
-    override fun onLoadingFailure(key: Long) {
+    override fun onLoadingFailure(key: Long, throwable: Throwable) {
         progress.visibility = View.GONE
         Timber.d("DebugTag, main onLoadingFailure $this with key $key")
+        Timber.e(throwable)
     }
 
     companion object {
