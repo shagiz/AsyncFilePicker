@@ -49,7 +49,7 @@ class SaveFileAsyncTask internal constructor(context: Context,
 
         weakContext.get()?.let {
             var r = saveToFile(it, uris[0], fileType, isFromCamera)
-            Thread.sleep(200000)
+            Thread.sleep(30000)
             return r
         }
 

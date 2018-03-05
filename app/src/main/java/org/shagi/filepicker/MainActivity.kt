@@ -1,17 +1,17 @@
 package org.shagi.filepicker
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
-import org.shagi.filepicker.filepicker.MyFilePicker
 import org.shagi.rxfilepicker.CustomActionItem
+import org.shagi.rxfilepicker.FilePicker
 import org.shagi.rxfilepicker.FilePickerDialog
 import org.shagi.rxfilepicker.FilePickerFragment
-import org.shagi.rxfilepicker.RxFilePicker
 import timber.log.Timber
 import java.io.File
 
