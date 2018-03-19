@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -81,10 +82,14 @@ class IntentResolver(private val activity: Activity) {
         }
     }
 
-    private fun getGalleryIntent(): Intent {
+    private fun getGalleryIntent(multipleSelect: Boolean): Intent {
         if (galleryIntent == null) {
             galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             galleryIntent?.type = "image/*"
+
+            if (multipleSelect && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                galleryIntent?.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            }
         }
 
         return galleryIntent ?: throw IllegalStateException("intent must be created")
@@ -96,9 +101,9 @@ class IntentResolver(private val activity: Activity) {
         }
     }
 
-    fun launchGallery(listener: Fragment) {
+    fun launchGallery(listener: Fragment, multipleSelect: Boolean) {
         if (requestPermissions(listener, getGalleryPermissions())) {
-            listener.startActivityForResult(loadSystemPackages(getGalleryIntent()), REQUESTER)
+            listener.startActivityForResult(loadSystemPackages(getGalleryIntent(multipleSelect)), REQUESTER)
         }
     }
 

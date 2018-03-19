@@ -25,33 +25,38 @@ class MainActivity : AppCompatActivity(), FilePicker.OnLoadingListener {
         setContentView(R.layout.activity_main)
         val listener: View.OnClickListener
 
+        val filePickerDialog = FilePickerDialog.newInstance().apply {
+            multipleSelect = true
+            addCustomAction(
+                    CustomActionItem(R.drawable.file_picker_ic_folder,
+                            R.string.fpd_load_from_medical_note_documents,
+                            View.OnClickListener {
+                                Thread.sleep(5000)
+                                Toast.makeText(context, "1 $context", Toast.LENGTH_SHORT).show()
+                            })
+            )
+            addCustomAction(
+                    CustomActionItem(R.drawable.file_picker_ic_folder,
+                            R.string.fpd_load_from_medical_note_documents,
+                            View.OnClickListener {
+                                Toast.makeText(context, "2  $context", Toast.LENGTH_SHORT).show()
+                            })
+            )
+        }
+
         if (savedInstanceState == null) {
-            val filePickerDialog = FilePickerDialog.newInstance().apply {
-                addCustomAction(
-                        CustomActionItem(R.drawable.file_picker_ic_folder,
-                                R.string.fpd_load_from_medical_note_documents,
-                                View.OnClickListener {
-                                    Toast.makeText(context, "1 $context", Toast.LENGTH_SHORT).show()
-                                })
-                )
-                addCustomAction(
-                        CustomActionItem(R.drawable.file_picker_ic_folder,
-                                R.string.fpd_load_from_medical_note_documents,
-                                View.OnClickListener {
-                                    Toast.makeText(context, "2  $context", Toast.LENGTH_SHORT).show()
-                                })
-                )
-            }
             listener = View.OnClickListener {
                 FilePickerFragment.getFragment(supportFragmentManager, true).apply {
                     setOnLoadingListener(this@MainActivity)
                     use(filePickerDialog)
                 }.show()
-
             }
         } else {
             keys = savedInstanceState.getLongArray(ARG_KEYS).toMutableList()
-            val fragment = FilePickerFragment.getFragment(supportFragmentManager).apply { setOnLoadingListener(this@MainActivity) }
+            val fragment = FilePickerFragment.getFragment(supportFragmentManager).apply {
+                setOnLoadingListener(this@MainActivity)
+                use(filePickerDialog)
+            }
             listener = View.OnClickListener { fragment.show() }
         }
 
