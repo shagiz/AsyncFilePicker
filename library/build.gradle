@@ -2,6 +2,12 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+ext {
+    PUBLISH_GROUP_ID = 'org.shagi'
+    PUBLISH_ARTIFACT_ID = 'filepicker'
+    PUBLISH_VERSION = '0.1'
+}
+
 android {
     compileSdkVersion 27
 
@@ -9,7 +15,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 27
         versionCode 1
-        versionName "1.0"
+        versionName "0.1"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -33,3 +39,5 @@ dependencies {
     implementation "com.android.support:design:27.1.0"
     implementation "com.android.support:support-v4:27.1.0"
 }
+
+apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'
