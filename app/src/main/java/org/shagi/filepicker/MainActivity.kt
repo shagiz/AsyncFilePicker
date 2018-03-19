@@ -2,20 +2,20 @@ package org.shagi.filepicker
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import org.shagi.rxfilepicker.CustomActionItem
+import org.shagi.rxfilepicker.FilePicker
 import org.shagi.rxfilepicker.FilePickerDialog
 import org.shagi.rxfilepicker.FilePickerFragment
-import org.shagi.rxfilepicker.RxFilePicker
 import timber.log.Timber
 import java.io.File
 
-class MainActivity : AppCompatActivity(), RxFilePicker.OnLoadingListener {
-
+class MainActivity : AppCompatActivity(), FilePicker.OnLoadingListener {
     private var keys: MutableList<Long> = ArrayList<Long>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,33 +25,38 @@ class MainActivity : AppCompatActivity(), RxFilePicker.OnLoadingListener {
         setContentView(R.layout.activity_main)
         val listener: View.OnClickListener
 
+        val filePickerDialog = FilePickerDialog.newInstance().apply {
+            multipleSelect = true
+            addCustomAction(
+                    CustomActionItem(R.drawable.file_picker_ic_folder,
+                            R.string.fpd_load_from_medical_note_documents,
+                            View.OnClickListener {
+                                Thread.sleep(5000)
+                                Toast.makeText(context, "1 $context", Toast.LENGTH_SHORT).show()
+                            })
+            )
+            addCustomAction(
+                    CustomActionItem(R.drawable.file_picker_ic_folder,
+                            R.string.fpd_load_from_medical_note_documents,
+                            View.OnClickListener {
+                                Toast.makeText(context, "2  $context", Toast.LENGTH_SHORT).show()
+                            })
+            )
+        }
+
         if (savedInstanceState == null) {
-            val filePickerDialog = FilePickerDialog.newInstance().apply {
-                addCustomAction(
-                        CustomActionItem(R.drawable.file_picker_ic_folder,
-                                R.string.fpd_load_from_medical_note_documents,
-                                View.OnClickListener {
-                                    Toast.makeText(context, "1 $context", Toast.LENGTH_SHORT).show()
-                                })
-                )
-                addCustomAction(
-                        CustomActionItem(R.drawable.file_picker_ic_folder,
-                                R.string.fpd_load_from_medical_note_documents,
-                                View.OnClickListener {
-                                    Toast.makeText(context, "2  $context", Toast.LENGTH_SHORT).show()
-                                })
-                )
-            }
             listener = View.OnClickListener {
-                FilePickerFragment.getFragment(supportFragmentManager).apply {
+                FilePickerFragment.getFragment(supportFragmentManager, true).apply {
                     setOnLoadingListener(this@MainActivity)
                     use(filePickerDialog)
                 }.show()
-
             }
         } else {
             keys = savedInstanceState.getLongArray(ARG_KEYS).toMutableList()
-            val fragment = FilePickerFragment.getFragment(supportFragmentManager).apply { setOnLoadingListener(this@MainActivity) }
+            val fragment = FilePickerFragment.getFragment(supportFragmentManager).apply {
+                setOnLoadingListener(this@MainActivity)
+                use(filePickerDialog)
+            }
             listener = View.OnClickListener { fragment.show() }
         }
 
@@ -76,6 +81,8 @@ class MainActivity : AppCompatActivity(), RxFilePicker.OnLoadingListener {
 
     override fun onLoadingSuccess(key: Long, file: File) {
         progress.visibility = View.GONE
+        Log.d("DEBUG", "onLoadingSuccess $key, $file")
+
         val imageView: ImageView = when (keys.size) {
             0 -> image_1
             1 -> image_2

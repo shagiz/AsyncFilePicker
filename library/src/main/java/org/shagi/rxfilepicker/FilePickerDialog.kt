@@ -1,9 +1,12 @@
 package org.shagi.rxfilepicker
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ClipData
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialogFragment
 import android.view.LayoutInflater
@@ -23,6 +26,7 @@ open class FilePickerDialog : BottomSheetDialogFragment() {
     var showCamera = true
     var showGallery = true
     var showFileSystem = true
+    var multipleSelect = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,14 +55,13 @@ open class FilePickerDialog : BottomSheetDialogFragment() {
         if (showGallery) {
             file_picker_gallery.setOnClickListener {
                 isCameraStarting = false
-                resolver.launchGallery(this)
+                resolver.launchGallery(this, multipleSelect)
             }
         } else {
             file_picker_gallery.visibility = View.GONE
         }
 
         if (showFileSystem) {
-
             file_picker_files.setOnClickListener { onFilesOpenClick() }
         } else {
             file_picker_files.visibility = View.GONE
@@ -72,6 +75,11 @@ open class FilePickerDialog : BottomSheetDialogFragment() {
     private fun onFilesOpenClick() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.addCategory(Intent.CATEGORY_OPENABLE)
+
+        if (multipleSelect && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        }
+
         intent.type = "*/*"
         startActivityForResult(intent, IntentResolver.REQUESTER)
     }
@@ -87,15 +95,25 @@ open class FilePickerDialog : BottomSheetDialogFragment() {
         super.onDestroyView()
     }
 
+    @SuppressLint("NewApi")
     final override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == IntentResolver.REQUESTER && resultCode == Activity.RESULT_OK) {
-            val isFromCamera = resolver.fromCamera(data)
-            val fileType = getFileType(data)
-            val uri = getUri(data)
+            if (data?.data != null) {
+                val isFromCamera = resolver.fromCamera(data)
+                val fileType = getFileType(data)
+                val uri = getUri(data)
 
-            uri?.let {
-                filePickedListener?.onFilePicked(uri, fileType, isFromCamera)
+                uri?.let {
+                    filePickedListener?.onFilePicked(uri, fileType, isFromCamera)
+                }
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && data?.clipData != null) {
+                val clipData = data.clipData
+                (0 until clipData.itemCount)
+                        .map(clipData::getItemAt)
+                        .map(ClipData.Item::getUri)
+                        .filterNotNull()
+                        .forEach { filePickedListener?.onFilePicked(it, getFileType(it), false) }
             }
         }
 
@@ -115,7 +133,7 @@ open class FilePickerDialog : BottomSheetDialogFragment() {
                 if (isCameraStarting) {
                     resolver.launchCamera(this)
                 } else {
-                    resolver.launchGallery(this)
+                    resolver.launchGallery(this, multipleSelect)
                 }
             } else {
                 dismissAllowingStateLoss()
@@ -129,6 +147,10 @@ open class FilePickerDialog : BottomSheetDialogFragment() {
         if (resolver.fromCamera(data)) return FileType.IMAGE
 
         val uri = data?.data
+        return getFileType(uri)
+    }
+
+    private fun getFileType(uri: Uri?): FileType {
         val isImage = uri?.let {
             context.contentResolver.getType(it)
         }?.contains("image/") == true

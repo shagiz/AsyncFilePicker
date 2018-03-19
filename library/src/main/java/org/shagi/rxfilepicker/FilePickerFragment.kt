@@ -3,13 +3,11 @@ package org.shagi.rxfilepicker
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import io.reactivex.disposables.CompositeDisposable
 
 class FilePickerFragment : Fragment() {
 
     private var filePickerDialog: FilePickerDialog? = null
-    private lateinit var picker: RxFilePicker
-    private val compositeDisposable = CompositeDisposable()
+    private lateinit var picker: FilePicker
     private var filePickerSettings: FilePickerSettings? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,7 +15,7 @@ class FilePickerFragment : Fragment() {
         retainInstance = true
 
         val useCache = arguments?.getBoolean(ARG_USE_CACHE) == true
-        picker = RxFilePicker(context.applicationContext, useCache)
+        picker = FilePicker(context.applicationContext, useCache)
     }
 
     override fun onDetach() {
@@ -29,7 +27,7 @@ class FilePickerFragment : Fragment() {
         super.onDetach()
     }
 
-    fun setOnLoadingListener(_loadingListener: RxFilePicker.OnLoadingListener) {
+    fun setOnLoadingListener(_loadingListener: FilePicker.OnLoadingListener) {
         picker.setLoadingListener(_loadingListener)
     }
 
@@ -46,7 +44,7 @@ class FilePickerFragment : Fragment() {
             picker.setup(it)
         }
         picker.with(filePickerDialog ?: FilePickerDialog.newInstance())
-        compositeDisposable.add(picker.subscribe(fragmentManager))
+        picker.subscribe(fragmentManager)
     }
 
     companion object {
