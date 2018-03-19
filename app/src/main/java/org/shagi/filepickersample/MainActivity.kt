@@ -1,17 +1,13 @@
-package org.shagi.filepicker
+package org.shagi.filepickersample
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
-import org.shagi.rxfilepicker.CustomActionItem
-import org.shagi.rxfilepicker.FilePicker
-import org.shagi.rxfilepicker.FilePickerDialog
-import org.shagi.rxfilepicker.FilePickerFragment
+import org.shagi.filepicker.*
 import timber.log.Timber
 import java.io.File
 
@@ -31,7 +27,6 @@ class MainActivity : AppCompatActivity(), FilePicker.OnLoadingListener {
                     CustomActionItem(R.drawable.file_picker_ic_folder,
                             R.string.fpd_load_from_medical_note_documents,
                             View.OnClickListener {
-                                Thread.sleep(5000)
                                 Toast.makeText(context, "1 $context", Toast.LENGTH_SHORT).show()
                             })
             )
@@ -46,7 +41,7 @@ class MainActivity : AppCompatActivity(), FilePicker.OnLoadingListener {
 
         if (savedInstanceState == null) {
             listener = View.OnClickListener {
-                FilePickerFragment.getFragment(supportFragmentManager, true).apply {
+                FilePickerFragment.getFragment(supportFragmentManager, false).apply {
                     setOnLoadingListener(this@MainActivity)
                     use(filePickerDialog)
                 }.show()
@@ -81,7 +76,6 @@ class MainActivity : AppCompatActivity(), FilePicker.OnLoadingListener {
 
     override fun onLoadingSuccess(key: Long, file: File) {
         progress.visibility = View.GONE
-        Log.d("DEBUG", "onLoadingSuccess $key, $file")
 
         val imageView: ImageView = when (keys.size) {
             0 -> image_1

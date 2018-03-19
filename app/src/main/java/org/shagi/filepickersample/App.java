@@ -1,4 +1,4 @@
-package org.shagi.filepicker;
+package org.shagi.filepickersample;
 
 import android.app.Application;
 

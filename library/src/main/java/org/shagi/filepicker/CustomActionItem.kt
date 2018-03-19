@@ -1,4 +1,4 @@
-package org.shagi.rxfilepicker
+package org.shagi.filepicker
 
 import android.content.Context
 import android.support.annotation.DrawableRes

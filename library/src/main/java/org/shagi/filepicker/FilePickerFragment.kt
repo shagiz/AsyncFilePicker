@@ -1,4 +1,4 @@
-package org.shagi.rxfilepicker
+package org.shagi.filepicker
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -15,11 +15,11 @@ class FilePickerFragment : Fragment() {
         retainInstance = true
 
         val useCache = arguments?.getBoolean(ARG_USE_CACHE) == true
-        picker = FilePicker(context.applicationContext, useCache)
+        picker = FilePicker(requireContext().applicationContext, useCache)
     }
 
     override fun onDetach() {
-        if (activity.isFinishing) {
+        if (requireActivity().isFinishing) {
             picker.dispose()
         } else {
             picker.detach()
@@ -44,7 +44,7 @@ class FilePickerFragment : Fragment() {
             picker.setup(it)
         }
         picker.with(filePickerDialog ?: FilePickerDialog.newInstance())
-        picker.subscribe(fragmentManager)
+        picker.subscribe(requireFragmentManager())
     }
 
     companion object {

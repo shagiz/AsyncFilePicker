@@ -1,4 +1,4 @@
-package org.shagi.rxfilepicker
+package org.shagi.filepicker
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -7,7 +7,6 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.os.AsyncTask
 import android.support.media.ExifInterface
-import android.util.Log
 
 import java.io.File
 import java.io.FileNotFoundException
@@ -40,20 +39,16 @@ class SaveFileAsyncTask internal constructor(context: Context,
         key = System.currentTimeMillis()
         val loadingListener = weakListener?.get()
         loadingListener?.onLoadingStart(key) ?: cancel(false)
-        Log.d("DEBUG", "onPreExecute $key, $loadingListener")
     }
 
     override fun doInBackground(vararg uris: Uri): File? {
         if (isCancelled) return null
-        Log.d("DEBUG", "doInBackground $key, $uris, ${uris.size} , ${uris[0]}")
 
         weakContext.get()?.let {
-            var r = saveToFile(it, uris[0], fileType, isFromCamera)
-            Thread.sleep(30000)
-            return r
+            return saveToFile(it, uris[0], fileType, isFromCamera)
         }
 
-        return null;
+        return null
     }
 
     override fun onPostExecute(file: File?) {
@@ -65,7 +60,6 @@ class SaveFileAsyncTask internal constructor(context: Context,
                 return
             }
             if (file != null) {
-                Log.d("DEBUG", "onPostExecute $key, $file, $loadingListener, ${weakContext.get()}")
                 loadingListener.onLoadingSuccess(key, file)
             }
         }

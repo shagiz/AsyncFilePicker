@@ -1,10 +1,9 @@
-package org.shagi.rxfilepicker
+package org.shagi.filepicker
 
 import android.content.Context
 import android.net.Uri
 import android.os.AsyncTask
 import android.support.v4.app.FragmentManager
-import android.util.Log
 import java.io.File
 
 class FilePicker(var context: Context?, private val useCache: Boolean = false) : FilePickerDialog.OnFilePickedListener {

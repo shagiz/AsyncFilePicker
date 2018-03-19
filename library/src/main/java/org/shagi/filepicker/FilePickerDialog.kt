@@ -1,4 +1,4 @@
-package org.shagi.rxfilepicker
+package org.shagi.filepicker
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -31,7 +31,7 @@ open class FilePickerDialog : BottomSheetDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        resolver = IntentResolver(activity)
+        resolver = IntentResolver(requireActivity())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
@@ -68,7 +68,7 @@ open class FilePickerDialog : BottomSheetDialogFragment() {
         }
 
         customActions.forEach {
-            (view as LinearLayout).addView(it.generateView(context, view))
+            (view as LinearLayout).addView(it.generateView(requireContext(), view))
         }
     }
 
@@ -152,7 +152,7 @@ open class FilePickerDialog : BottomSheetDialogFragment() {
 
     private fun getFileType(uri: Uri?): FileType {
         val isImage = uri?.let {
-            context.contentResolver.getType(it)
+            requireContext().contentResolver.getType(it)
         }?.contains("image/") == true
 
         if (isImage) return FileType.IMAGE

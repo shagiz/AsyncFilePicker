@@ -1,4 +1,4 @@
-package org.shagi.rxfilepicker
+package org.shagi.filepicker
 
 class FilePickerSettings {
     var maxWidth: Int = 1024
