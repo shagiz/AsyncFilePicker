@@ -99,8 +99,8 @@ open class FilePickerDialog : BottomSheetDialogFragment() {
     final override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == IntentResolver.REQUESTER && resultCode == Activity.RESULT_OK) {
-            if (data?.data != null) {
-                val isFromCamera = resolver.fromCamera(data)
+            val isFromCamera = resolver.fromCamera(data)
+            if (data?.data != null || isFromCamera) {
                 val fileType = getFileType(data)
                 val uri = getUri(data)
 
