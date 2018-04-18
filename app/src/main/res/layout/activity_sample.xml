@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:scrollbars="none">
+
+    <LinearLayout
+        android:id="@+id/root_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/sample_file_container_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="?selectableItemBackground"
+            android:clickable="true"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/sample_file_container_1_iv"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@color/colorPrimary"/>
+
+            <TextView
+                android:id="@+id/sample_file_container_1_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="16dp"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/sample_file_container_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="?selectableItemBackground"
+            android:clickable="true"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/sample_file_container_2_iv"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@color/colorPrimary"/>
+
+            <TextView
+                android:id="@+id/sample_file_container_2_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="16dp"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/sample_file_container_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="?selectableItemBackground"
+            android:clickable="true"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/sample_file_container_3_iv"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@color/colorPrimary"/>
+
+            <TextView
+                android:id="@+id/sample_file_container_3_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="16dp"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/sample_file_container_4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="?selectableItemBackground"
+            android:clickable="true"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/sample_file_container_4_iv"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@color/colorPrimary"/>
+
+            <TextView
+                android:id="@+id/sample_file_container_4_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="16dp"/>
+        </LinearLayout>
+
+
+        <CheckedTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+            android:checked="false"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:text="Use cache"
+            android:visibility="gone"/>
+
+
+        <CheckedTextView
+            android:id="@+id/sample_miltiple_select"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+            android:checked="false"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:text="Multiple select"/>
+
+
+        <CheckedTextView
+            android:id="@+id/sample_disable_camera"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+            android:checked="false"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:text="Disable Camera"/>
+
+
+        <CheckedTextView
+            android:id="@+id/sample_disable_gallery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+            android:checked="false"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:text="Disable Gallery"/>
+
+
+        <CheckedTextView
+            android:id="@+id/sample_disable_files"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+            android:checked="false"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:text="Disable Files"/>
+
+
+        <CheckedTextView
+            android:id="@+id/sample_disable_custom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+            android:checked="false"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:text="Disable Custom"/>
+
+    </LinearLayout>
+</ScrollView>

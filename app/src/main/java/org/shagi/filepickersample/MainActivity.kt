@@ -9,10 +9,9 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import org.shagi.filepicker.*
 import timber.log.Timber
-import java.io.File
 
 class MainActivity : AppCompatActivity(), FilePicker.OnLoadingListener {
-    private var keys: MutableList<Long> = ArrayList<Long>()
+    private var keys: MutableList<Long> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,8 +73,15 @@ class MainActivity : AppCompatActivity(), FilePicker.OnLoadingListener {
         Timber.d("DebugTag, main onLoadingStart $this with key $key")
     }
 
-    override fun onLoadingSuccess(key: Long, file: File) {
+    override fun onLoadingSuccess(key: Long, file: ExtFile) {
         progress.visibility = View.GONE
+
+        Timber.d("DebugTag, onLoadingSuccess $key" +
+                "\n ${file.file}" +
+                "\n ${file.baseUri}" +
+                "\n ${file.name}" +
+                "\n ${file.extension}" +
+                "\n ${file.mimType}")
 
         val imageView: ImageView = when (keys.size) {
             0 -> image_1
@@ -88,7 +94,7 @@ class MainActivity : AppCompatActivity(), FilePicker.OnLoadingListener {
         keys.remove(key)
 
         Picasso.with(this)
-                .load(file)
+                .load(file.file)
                 .into(imageView)
 
         Timber.d("DebugTag, main onLoadingSuccess $this with key $key")

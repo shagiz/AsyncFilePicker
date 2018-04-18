@@ -34,7 +34,7 @@ class CacheController constructor(val context: Context) {
     }
 
     @Throws(MaxCacheFileSizeException::class)
-    fun saveBitmap(bitmap: Bitmap): File {
+    fun saveBitmap(bitmap: Bitmap): ExtFile {
 
         val currentSize = getDirSize(cacheDir)
         val imageFile = File(cacheDir, "image_" + System.currentTimeMillis() + ".jpg")
@@ -58,11 +58,12 @@ class CacheController constructor(val context: Context) {
                 byteOutput.writeTo(it)
             }
         }
-        return imageFile
+
+        return ExtFile(imageFile, null, imageFile.name, imageFile.extension, getMimeType(imageFile))
     }
 
     @Throws(MaxCacheFileSizeException::class)
-    fun saveFile(uri: Uri): File {
+    fun saveFile(uri: Uri): ExtFile {
 
         val cursor = context.contentResolver.query(uri, null, null, null, null)
         cursor?.moveToFirst()
@@ -100,7 +101,9 @@ class CacheController constructor(val context: Context) {
         outputStream.flush()
         cursor?.close()
 
-        return file
+        val ext = file.extension
+
+        return ExtFile(file, uri, name, ext, getMimeType(ext))
     }
 
     private fun cleanSpace(dir: File, bytes: Long) {

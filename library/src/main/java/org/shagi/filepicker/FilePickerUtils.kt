@@ -4,6 +4,8 @@ import android.content.Context
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
+import android.provider.OpenableColumns
+import android.util.Log
 import android.webkit.MimeTypeMap
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -36,6 +38,11 @@ fun getMimeType(file: File): String? {
     return mimeType
 }
 
+fun getMimeType(extension: String): String? =
+        if (MimeTypeMap.getSingleton().hasExtension(extension)) {
+            MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+        } else null
+
 fun getDataColumn(context: Context, uri: Uri): String? {
 
     var cursor: Cursor? = null
@@ -55,9 +62,19 @@ fun getDataColumn(context: Context, uri: Uri): String? {
     return null
 }
 
-fun saveTempFileUri(context: Context, uri: Uri): File {
+fun saveTempFileUri(context: Context, uri: Uri): ExtFile {
     val cursor = context.contentResolver.query(uri, null, null, null, null)
     cursor?.moveToFirst()
+
+
+    val name = cursor?.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+            ?: uri.lastPathSegment
+
+    val ext = name.split(".").last()
+
+    val mimeType = getMimeType(ext)
+
+    Log.d("QWERTY", "$name, $ext, $mimeType")
 
     val inputStream = context.contentResolver.openInputStream(uri)
     val file = File(context.filesDir, TEMP_FILE)
@@ -71,10 +88,10 @@ fun saveTempFileUri(context: Context, uri: Uri): File {
 
     cursor.close()
 
-    return file
+    return ExtFile(file, uri, name, ext, mimeType)
 }
 
-fun saveTempBitmap(context: Context, bitmap: Bitmap): File {
+fun saveTempBitmap(context: Context, bitmap: Bitmap): ExtFile {
 
     val imageFile = File(context.filesDir, TEMP_FILE)
 
@@ -88,5 +105,7 @@ fun saveTempBitmap(context: Context, bitmap: Bitmap): File {
         }
     }
 
-    return imageFile
+    val ext = "jpg"
+
+    return ExtFile(imageFile, null, imageFile.name, ext, getMimeType(ext))
 }

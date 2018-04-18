@@ -7,15 +7,13 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.os.AsyncTask
 import android.support.media.ExifInterface
-
-import java.io.File
 import java.io.FileNotFoundException
 import java.lang.ref.WeakReference
 
 class SaveFileAsyncTask internal constructor(context: Context,
                                              cacheController: CacheController?,
                                              private val fileType: FileType,
-                                             private val isFromCamera: Boolean) : AsyncTask<Uri, Void, File>() {
+                                             private val isFromCamera: Boolean) : AsyncTask<Uri, Void, ExtFile>() {
 
     private var key: Long = 0
     private var throwable: Throwable? = null
@@ -41,7 +39,7 @@ class SaveFileAsyncTask internal constructor(context: Context,
         loadingListener?.onLoadingStart(key) ?: cancel(false)
     }
 
-    override fun doInBackground(vararg uris: Uri): File? {
+    override fun doInBackground(vararg uris: Uri): ExtFile? {
         if (isCancelled) return null
 
         weakContext.get()?.let {
@@ -51,7 +49,7 @@ class SaveFileAsyncTask internal constructor(context: Context,
         return null
     }
 
-    override fun onPostExecute(file: File?) {
+    override fun onPostExecute(file: ExtFile?) {
         val loadingListener = weakListener?.get()
 
         loadingListener?.let {
@@ -67,7 +65,7 @@ class SaveFileAsyncTask internal constructor(context: Context,
 
     //---------------------------------------------------------------------------------------------
 
-    private fun saveToFile(context: Context, uri: Uri, fileType: FileType, isFromCamera: Boolean): File {
+    private fun saveToFile(context: Context, uri: Uri, fileType: FileType, isFromCamera: Boolean): ExtFile {
         return if (fileType == FileType.FILE) {
             saveFile(context, uri)
         } else {
@@ -75,7 +73,7 @@ class SaveFileAsyncTask internal constructor(context: Context,
         }
     }
 
-    private fun saveFile(context: Context, uri: Uri): File {
+    private fun saveFile(context: Context, uri: Uri): ExtFile {
         weakCacheController?.get()?.let {
             return it.saveFile(uri)
         }
@@ -83,7 +81,7 @@ class SaveFileAsyncTask internal constructor(context: Context,
         return saveTempFileUri(context, uri)
     }
 
-    private fun savePhoto(context: Context, uri: Uri, isFromCamera: Boolean): File {
+    private fun savePhoto(context: Context, uri: Uri, isFromCamera: Boolean): ExtFile {
         val bitmap = if (width - height == 0) {
             scaleDown(context, uri)
         } else {

@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import android.os.AsyncTask
 import android.support.v4.app.FragmentManager
-import java.io.File
 
 class FilePicker(var context: Context?, private val useCache: Boolean = false) : FilePickerDialog.OnFilePickedListener {
 
@@ -74,7 +73,7 @@ class FilePicker(var context: Context?, private val useCache: Boolean = false) :
 
     interface OnLoadingListener {
         fun onLoadingStart(key: Long)
-        fun onLoadingSuccess(key: Long, file: File)
+        fun onLoadingSuccess(key: Long, file: ExtFile)
         fun onLoadingFailure(key: Long, throwable: Throwable)
     }
 
