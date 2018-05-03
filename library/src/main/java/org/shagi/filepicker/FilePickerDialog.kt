@@ -67,8 +67,12 @@ open class FilePickerDialog : BottomSheetDialogFragment() {
             file_picker_files.visibility = View.GONE
         }
 
+        initCustomActions(view)
+    }
+
+    open fun initCustomActions(view: View) {
         customActions.forEach {
-            (view as LinearLayout).addView(it.generateView(requireContext(), view))
+            (view as ViewGroup).addView(it.generateView(requireContext(), view))
         }
     }
 

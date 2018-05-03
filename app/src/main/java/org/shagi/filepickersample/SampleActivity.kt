@@ -15,6 +15,7 @@ class SampleActivity : AppCompatActivity() {
     private var galleryDisabled = false
     private var filesDisabled = false
     private var customActionDisabled = false
+    private var useCustomLayout = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +36,7 @@ class SampleActivity : AppCompatActivity() {
 
                     Picasso.with(this@SampleActivity)
                             .load(file.file)
+                            .skipMemoryCache()
                             .into(sample_file_container_1_iv)
                 }
 
@@ -59,6 +61,7 @@ class SampleActivity : AppCompatActivity() {
 
                     Picasso.with(this@SampleActivity)
                             .load(file.file)
+                            .skipMemoryCache()
                             .into(sample_file_container_2_iv)
                 }
 
@@ -107,6 +110,7 @@ class SampleActivity : AppCompatActivity() {
 
                     Picasso.with(this@SampleActivity)
                             .load(file.file)
+                            .skipMemoryCache()
                             .into(sample_file_container_4_iv)
                 }
 
@@ -128,6 +132,11 @@ class SampleActivity : AppCompatActivity() {
             sample_disable_camera.isChecked = !sample_disable_camera.isChecked
         }
 
+        sample_use_custom_layout.setOnClickListener {
+            useCustomLayout = !useCustomLayout
+            sample_use_custom_layout.isChecked = !sample_use_custom_layout.isChecked
+        }
+
         sample_disable_gallery.setOnClickListener {
             galleryDisabled = !galleryDisabled
             sample_disable_gallery.isChecked = !sample_disable_gallery.isChecked
@@ -145,7 +154,11 @@ class SampleActivity : AppCompatActivity() {
     }
 
     private fun initFilePickerDialog() =
-            FilePickerDialog.newInstance().apply {
+            if (useCustomLayout) {
+                CustomPicker()
+            } else {
+                FilePickerDialog.newInstance()
+            }.apply {
                 multipleSelect = this@SampleActivity.multipleSelect
                 showCamera = !cameraDisabled
                 showGallery = !galleryDisabled

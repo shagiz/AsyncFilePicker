@@ -121,7 +121,7 @@
 
 
         <CheckedTextView
-            android:id="@+id/sample_miltiple_select"
+            android:id="@+id/sample_use_custom_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackground"
@@ -130,7 +130,7 @@
             android:clickable="true"
             android:gravity="center_vertical"
             android:padding="16dp"
-            android:text="Multiple select"/>
+            android:text="Use custom dialog layout"/>
 
 
         <CheckedTextView
@@ -183,6 +183,19 @@
             android:gravity="center_vertical"
             android:padding="16dp"
             android:text="Disable Custom"/>
+
+
+        <CheckedTextView
+            android:id="@+id/sample_miltiple_select"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+            android:checked="false"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:text="Multiple select (in develop)"/>
 
     </LinearLayout>
 </ScrollView>
