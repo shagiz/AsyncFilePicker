@@ -33,7 +33,11 @@ implementation('org.shagi:filepicker:0.4') {
 
 # Usage
 
-1. Add provider block to your's AndroidManifest.xml
+1. Add permissions and provider block to your's AndroidManifest.xml
+```xml
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+```
 ```xml
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -55,10 +59,15 @@ implementation('org.shagi:filepicker:0.4') {
 3. For simple use instantiate FilePickerFragment and in OnClick method pass FilePickerDialog into fragment.
 
 *ExtFile* - wrapper object for File object with additional data such as (baseUri, mimeType, fileName)
+
+Note: By default cache is not used and each time you take photo or file it will have same name, 
+so Picasso or other image loading libraries can cache the **first image** by filename.
+To avoid that you have to save received file by yourself or use cache in FilePickerFragment.
+
 ```kotlin
-        val pickerFragment = FilePickerFragment.getFragment(supportFragmentManager)
+        val pickerFragment = FilePickerFragment.getFragment(supportFragmentManager, useCache)
         view.setOnClickListener {
-                    pickerFragment.use(initFilePickerDialog())
+                    pickerFragment.use(FilePickerDialog.newInstance())
                     pickerFragment.setOnLoadingListener(object : FilePicker.OnLoadingListener {
                         override fun onLoadingStart(key: Long) {
                             imageView.setImageResource(R.color.colorAccent)
@@ -67,10 +76,11 @@ implementation('org.shagi:filepicker:0.4') {
         
                         override fun onLoadingSuccess(key: Long, file: ExtFile) {
                             textView.text = file.toString()
-        
-                            Picasso.with(this@SampleActivity)
-                                    .load(file.file)
-                                    .into(imageView)
+                            
+                            Picasso.get()
+                               .load(file.file)
+                               .memoryPolicy(MemoryPolicy.NO_CACHE)
+                               .into(imageView)
                         }
         
                         override fun onLoadingFailure(key: Long, throwable: Throwable) {

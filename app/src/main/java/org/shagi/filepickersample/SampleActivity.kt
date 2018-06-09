@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
+import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_sample.*
 import org.shagi.filepicker.*
@@ -34,9 +35,9 @@ class SampleActivity : AppCompatActivity() {
                 override fun onLoadingSuccess(key: Long, file: ExtFile) {
                     sample_file_container_1_info.text = file.toString()
 
-                    Picasso.with(this@SampleActivity)
+                    Picasso.get()
                             .load(file.file)
-                            .skipMemoryCache()
+                            .memoryPolicy(MemoryPolicy.NO_CACHE)
                             .into(sample_file_container_1_iv)
                 }
 
@@ -59,9 +60,9 @@ class SampleActivity : AppCompatActivity() {
                 override fun onLoadingSuccess(key: Long, file: ExtFile) {
                     sample_file_container_2_info.text = file.toString()
 
-                    Picasso.with(this@SampleActivity)
+                    Picasso.get()
                             .load(file.file)
-                            .skipMemoryCache()
+                            .memoryPolicy(MemoryPolicy.NO_CACHE)
                             .into(sample_file_container_2_iv)
                 }
 
@@ -84,7 +85,7 @@ class SampleActivity : AppCompatActivity() {
                 override fun onLoadingSuccess(key: Long, file: ExtFile) {
                     sample_file_container_3_info.text = file.toString()
 
-                    Picasso.with(this@SampleActivity)
+                    Picasso.get()
                             .load(file.file)
                             .into(sample_file_container_3_iv)
                 }
@@ -108,9 +109,9 @@ class SampleActivity : AppCompatActivity() {
                 override fun onLoadingSuccess(key: Long, file: ExtFile) {
                     sample_file_container_4_info.text = file.toString()
 
-                    Picasso.with(this@SampleActivity)
+                    Picasso.get()
                             .load(file.file)
-                            .skipMemoryCache()
+                            .memoryPolicy(MemoryPolicy.NO_CACHE)
                             .into(sample_file_container_4_iv)
                 }
 

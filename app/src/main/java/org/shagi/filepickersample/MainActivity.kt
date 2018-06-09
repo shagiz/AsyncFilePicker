@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity(), FilePicker.OnLoadingListener {
 
         keys.remove(key)
 
-        Picasso.with(this)
+        Picasso.get()
                 .load(file.file)
                 .into(imageView)
 
