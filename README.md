@@ -26,9 +26,7 @@ allprojects {
 Then include this in your dependencies block
 
 ```groovy
-implementation('org.shagi:filepicker:0.4') {
-        exclude group: 'com.android.support'
-    }
+implementation 'org.shagi:filepicker:0.4'
 ```
 
 # Usage
@@ -62,7 +60,7 @@ implementation('org.shagi:filepicker:0.4') {
 
 Note: By default cache is not used and each time you take photo or file it will have same name, 
 so Picasso or other image loading libraries can cache the **first image** by filename.
-To avoid that you have to save received file by yourself or use cache in FilePickerFragment.
+To avoid that you can to save received file by yourself or use cache in FilePickerFragment or use memoryPolicy(MemoryPolicy.NO_CACHE) in Picasso.
 
 ```kotlin
         val pickerFragment = FilePickerFragment.getFragment(supportFragmentManager, useCache)
@@ -147,3 +145,20 @@ You can setup maxCacheSize, maxFileSize, maxWidth, maxHeight use FilePickerFragm
 ```
 
 ![screenshot](screenshot_3.jpg)
+
+# License
+
+
+    Copyright 2018 shagiz
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
