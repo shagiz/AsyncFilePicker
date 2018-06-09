@@ -26,9 +26,7 @@ allprojects {
 Then include this in your dependencies block
 
 ```groovy
-implementation('org.shagi:filepicker:0.4') {
-        exclude group: 'com.android.support'
-    }
+implementation 'org.shagi:filepicker:0.4'
 ```
 
 # Usage
