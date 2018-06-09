@@ -154,17 +154,17 @@ class SampleActivity : AppCompatActivity() {
     }
 
     private fun initFilePickerDialog() =
-            if (useCustomLayout) {
+            if (useCustomLayout) { // to user Custom Picker
                 CustomPicker()
             } else {
                 FilePickerDialog.newInstance()
             }.apply {
-                multipleSelect = this@SampleActivity.multipleSelect
-                showCamera = !cameraDisabled
-                showGallery = !galleryDisabled
-                showFileSystem = !filesDisabled
+                multipleSelect = this@SampleActivity.multipleSelect //multipe files\photo select
+                showCamera = !cameraDisabled // to show camera picker row
+                showGallery = !galleryDisabled // to show gallery picker row
+                showFileSystem = !filesDisabled // to show file system picker row
 
-                if (!customActionDisabled) {
+                if (!customActionDisabled) { // to use custom action
                     addCustomAction(CustomActionItem(R.drawable.file_picker_ic_folder,
                             R.string.fpd_load_from_medical_note_documents,
                             View.OnClickListener {

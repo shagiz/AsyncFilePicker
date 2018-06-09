@@ -7,7 +7,7 @@ data class ExtFile(val file: File,
                    val baseUri: Uri? = null,
                    val name: String? = null,
                    val extension: String? = null,
-                   val mimType: String? = null) {
+                   val mimeType: String? = null) {
 
     override fun toString(): String {
         return """
@@ -15,7 +15,7 @@ data class ExtFile(val file: File,
             Uri: $baseUri
             Name: $name
             Extension: $extension
-            MimeType: $mimType
+            MimeType: $mimeType
         """.trimIndent()
     }
 }

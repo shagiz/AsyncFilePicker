@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity(), FilePicker.OnLoadingListener {
                 "\n ${file.baseUri}" +
                 "\n ${file.name}" +
                 "\n ${file.extension}" +
-                "\n ${file.mimType}")
+                "\n ${file.mimeType}")
 
         val imageView: ImageView = when (keys.size) {
             0 -> image_1

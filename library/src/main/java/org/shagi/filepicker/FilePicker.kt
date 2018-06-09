@@ -72,6 +72,11 @@ class FilePicker(var context: Context?, private val useCache: Boolean = false) :
     }
 
     interface OnLoadingListener {
+        /**
+         * Invokes when file start loading. When you are trying to get photos/files
+         * from remote source (Google drive, Dropbox etc.) it can take long time so you may want to show progress.
+         * @param key - key for current loading file.
+         */
         fun onLoadingStart(key: Long)
         fun onLoadingSuccess(key: Long, file: ExtFile)
         fun onLoadingFailure(key: Long, throwable: Throwable)
