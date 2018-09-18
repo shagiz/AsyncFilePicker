@@ -111,7 +111,7 @@ class CustomPicker : FilePickerDialog() {
 
 **By default each file and photo returned overrides one temp file, and you have to save this file by yourself.**
 
-If you want to upload multiple in one time you cant turn cache on by passing true as second param to FilePickerFragment.getFragment(fm,useCache).
+If you want to upload multiple at one time you can turn cache on by passing true as second param to FilePickerFragment.getFragment(fm,useCache).
 
 You can setup maxCacheSize, maxFileSize, maxWidth, maxHeight use FilePickerFragment.setup(FilePickerSettings) method
 
